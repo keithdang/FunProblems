@@ -10,15 +10,26 @@ using namespace std;
 void hanoiTower::start()
 {
 	cout << "Hanoi tower problem";
-	int num = 3;
+	int num = 4;
 	struct node *stack1 = NULL;
 	struct node *stack2 = NULL;
 	struct node *stack3 = NULL;
 	stack1 = createStack(stack1, num);
 	printStack(stack1);
-	popFromTo(&stack1, &stack2);
-	printStack(stack1);
-	printStack(stack2);
+	cout << "\n";
+	move(num, &stack1, &stack3, &stack2, 1, 3, 2);
+	cout << "Printing stack 3";
+	printStack(stack3);
+}
+void hanoiTower::move(int count, struct node **s1, struct node **s3, struct node **s2, int n1, int n3, int n2)
+{
+	if (count > 0)
+	{
+		move(count - 1, s1, s2, s3, n1, n2, n3);
+		cout << "Move disk " << count << " from " << n1 << " to " << n3 << ".\n";
+		popFromTo(s1, s3);
+		move(count - 1, s2, s3, s1, n2, n3, n1);
+	}
 }
 void hanoiTower::popFromTo(struct node **fromNode, struct node **toNode)
 {
@@ -27,12 +38,15 @@ void hanoiTower::popFromTo(struct node **fromNode, struct node **toNode)
 		*fromNode = (*fromNode)->next;
 	}
 	*toNode = push(*toNode, (*fromNode)->num);
-	*fromNode= (*fromNode)->prev;
-	(*fromNode)->next = NULL;
+	*fromNode = (*fromNode)->prev;
+	if ((*fromNode) != NULL)
+	{
+		(*fromNode)->next = NULL;
+	}
 }
 struct hanoiTower::node *hanoiTower::createStack(struct node *node, int amount)
 {
-	for (int i = 1; i <= amount; i++)
+	for (int i = amount; i > 0; i--)
 	{
 		node = push(node, i);
 	}
@@ -64,12 +78,12 @@ void hanoiTower::printStack(struct node *node)
 		cout << node->num;
 		node = node->next;
 	}
-	cout << "\nPrinting from beg to end: ";
-	while (node != NULL)
+	cout << "\nPrinting from end to beg: ";
+	do
 	{
 		cout << node->num;
 		node = node->prev;
-	}
+	} while (node != NULL);
 }
 hanoiTower::hanoiTower()
 {
